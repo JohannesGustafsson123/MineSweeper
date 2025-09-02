@@ -3,7 +3,7 @@ cellSize = 30
 
 colors = {
     "WHITE" : (255, 255, 255),
-    "LIGHTGRAY" : (100, 100, 100),
+    "LIGHTGRAY" : (211, 211, 211),
     "GRAY" : (150, 150, 150),
     "BLACK" : (0, 0, 0),
     "RED" : (255, 0, 0),
