@@ -1,8 +1,29 @@
 
 import pygame
+import sys
+import random
+import time
 
 from settings import *
 from cell import Cell
+
+# Create the grid
+def createGrid(cols, rows):
+    grid = [[Cell(x, y) for y in range(rows)] for x in range(cols)]
+    # Place all mines
+    placedMines = 0
+    while placedMines < mineCount:
+        x = random.randint(0, cols - 1)
+        y = random.randint(0, rows - 1)
+        if not grid[x][y].hasMine:
+            grid[x][y].hasMine = True
+            placedMines += 1
+    
+    for col in grid:
+        for cell in col:
+            cell.countAdjacent(grid)
+
+    return grid
 
 def main():
     # Initialize Pygame
