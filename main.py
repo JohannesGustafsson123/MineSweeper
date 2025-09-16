@@ -40,7 +40,13 @@ def revealEmpty(cell, grid):
                 if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]):
                     revealEmpty(grid[nx][ny], grid)
 
-
+def checkWin(grid):
+    # Loop through all cells, check if all non-mine cells have been revealed
+    for col in grid:
+        for cell in col:
+            if not cell.revealed and not cell.hasMine:
+                return False
+    return True
 
 def main():
     # Initialize Pygame
