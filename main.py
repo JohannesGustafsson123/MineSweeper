@@ -15,15 +15,32 @@ def createGrid(cols, rows):
     while placedMines < mineCount:
         x = random.randint(0, cols - 1)
         y = random.randint(0, rows - 1)
+        # Check if grid already has a mine.
         if not grid[x][y].hasMine:
             grid[x][y].hasMine = True
             placedMines += 1
-    
+    # Count adjacent mines.
     for col in grid:
         for cell in col:
             cell.countAdjacent(grid)
 
     return grid
+
+def revealEmpty(cell, grid):
+    # Check if cell has already been revealed or flagged.
+    if cell.revealed or cell.flagged:
+        return
+    
+    cell.revealed = True
+    # Check if cell has no mines next to it and it's not a mine.
+    if cell.adjacentMines == 0 and not cell.hasMine:
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nx, ny = cell.xCell + dx, cell.yCell + dy
+                if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]):
+                    revealEmpty(grid[nx][ny], grid)
+
+
 
 def main():
     # Initialize Pygame
