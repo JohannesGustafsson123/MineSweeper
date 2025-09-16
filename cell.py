@@ -38,3 +38,20 @@ class Cell:
             # If the cell is flagged, draw a blue circle
             if self.flagged:
                 pygame.draw.circle(surface, colors["BLUE"], self.rect.center, cellSize // 4)
+        
+    def countAdjacent(self, grid):
+        # If the cell has a mine return
+        if self.hasMine:
+            return
+
+        count = 0
+        # Loop through all cells that are within 1 tile.
+        for dx in [-1, 0, 1]:
+            for dy in [-1, 0, 1]:
+                nx, ny = self.xCell + dx, self.yCell + dy
+                # Make sure the cell is inside the grid
+                if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]):
+                    # If the cell has a mine, increase the count.
+                    if grid[nx][ny].hasMine:
+                        count += 1
+        self.adjacentMines = count
