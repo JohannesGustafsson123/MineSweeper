@@ -21,23 +21,24 @@ class Cell:
 
     # Draw the cell 
     def draw(self, surface):
+        offsetRect = self.rect.move(0, 50)
         if self.revealed:
             # If the cell is revealed, fill it with gray color
-            pygame.draw.rect(surface, colors["GRAY"], self.rect)
+            pygame.draw.rect(surface, colors["GRAY"], offsetRect)
             if self.hasMine:
                 # If the cell has a mine, fill it with a red circle
-                pygame.draw.circle(surface, colors["RED"], self.rect.center, cellSize // 4)
+                pygame.draw.circle(surface, colors["RED"], offsetRect.center, cellSize // 4)
             elif self.adjacentMines > 0:
                 # If there are other mines next to it, display the number in black text on the cell.
                 font = pygame.font.SysFont(None, 24)
                 text = font.render(str(self.adjacentMines), True, colors["BLACK"])
-                surface.blit(text, text.get_rect(center=self.rect.center))
+                surface.blit(text, text.get_rect(center=offsetRect.center))
         else:
             # If the cell is not revealed, fill it with white color
-            pygame.draw.rect(surface, colors["WHITE"], self.rect)
+            pygame.draw.rect(surface, colors["WHITE"], offsetRect)
             # If the cell is flagged, draw a blue circle
             if self.flagged:
-                pygame.draw.circle(surface, colors["BLUE"], self.rect.center, cellSize // 4)
+                pygame.draw.circle(surface, colors["BLUE"], offsetRect.center, cellSize // 4)
         
     def countAdjacent(self, grid):
         # If the cell has a mine return
