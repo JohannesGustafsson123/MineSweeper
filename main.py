@@ -41,7 +41,7 @@ def revealEmpty(cell, grid):
                     revealEmpty(grid[nx][ny], grid)
 
 def checkWin(grid):
-    # Loop through all cells, check if all non-mine cells have been revealed
+    # Loop through all cells, check if all non-mine cells have been revealed.
     for col in grid:
         for cell in col:
             if not cell.revealed and not cell.hasMine:
@@ -49,23 +49,84 @@ def checkWin(grid):
     return True
 
 def main():
-    # Initialize Pygame
     pygame.init()
+    font = pygame.font.SysFont(None, 32)
 
-    # Set up display
     screen_width = 600
-    screen_height = 600
+    screen_height = 650
     screen = pygame.display.set_mode((screen_width, screen_height))
-
-    # Set up caption
     pygame.display.set_caption("Minesweeper")
 
+    cols = screen_width // cellSize
+    rows = (screen_height - 50) // cellSize
 
-    # 
-    screen.fill((colors["LIGHTGRAY"]))  # Light gray background
+    grid = createGrid(cols, rows)
 
+    flagCount = 0
+    gameOver = False
+    won = False
 
+    # Restart button.
+    restartButton = pygame.Rect(250, 10, 100, 30)
 
+    running = True
+    while running:
+        screen.fill(colors["LIGHTGRAY"])
+
+        # Time, flag count.
+        elapsedTime = int(0)
+        timeText = font.render(f"Time: {elapsedTime}s", True, colors["BLACK"])
+        flagText = font.render(f"Flags: {flagCount}/{mineCount}", True, colors["BLACK"])
+        screen.blit(timeText, (10, 10))
+        screen.blit(flagText, (400, 10))
+
+        # Draw restart button.
+        pygame.draw.rect(screen, colors["GREEN"], restartButton)
+        restartLabel = font.render("Restart", True, colors["BLACK"])
+        screen.blit(restartLabel, restartLabel.get_rect(center=restartButton.center))
+
+        # Draw cells.
+        for col in grid:
+            for cell in col:
+                cell.draw(screen)
+        # Check if game is over.
+        if gameOver:
+            endText = "You Win :D" if won else "Game Over, bloody noob"
+            label = font.render(endText, True, colors["RED"])
+            screen.blit(label, label.get_rect(center=(screen_width // 2, screen_height - 20)))
+
+        # Mouse events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            elif event.type == pygame.MOUSEBUTTONDOWN and not gameOver:
+                mx, my = pygame.mouse.get_pos()
+                if my >= 50:
+                    gridX = mx // cellSize
+                    gridY = (my - 50) // cellSize
+                    cell = grid[gridX][gridY]
+
+                    if event.button == 1 and not cell.flagged:  # Left click
+                        # Check if cell has mine
+                        if cell.hasMine:
+                            cell.revealed = True
+                            gameOver = True
+                            won = False
+                        else:
+                            revealEmpty(cell, grid)
+                            if checkWin(grid):
+                                gameOver = True
+                                won = True
+
+                    elif event.button == 3 and not cell.revealed:  # Right click
+                        cell.flagged = not cell.flagged
+                        flagCount += 1 if cell.flagged else -1
+
+        pygame.display.flip()
+
+    pygame.quit()
+    sys.exit()
 
 if __name__ == "__main__":
     main()
