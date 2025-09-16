@@ -9,3 +9,5 @@ colors = {
     "RED" : (255, 0, 0),
     "BLUE" : (255, 0, 0)
 }
+
+mineCount = 40
