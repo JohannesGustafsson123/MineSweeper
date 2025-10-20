@@ -119,10 +119,19 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
 
-            elif event.type == pygame.MOUSEBUTTONDOWN and not gameOver:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 mx, my = pygame.mouse.get_pos()
+
+                # Check if restart button clicked
+                if restartButton.collidepoint(mx, my):
+                    grid = createGrid(cols, rows)
+                    flagCount = 0
+                    gameOver = False
+                    won = False
+                    startTicks = pygame.time.get_ticks()  # reset timer
+                    continue
                 
-                if my >= 50:
+                if my >= 50 and not gameOver:
                     gridX = mx // cellSize
                     gridY = (my - 50) // cellSize
                     cell = grid[gridX][gridY]
