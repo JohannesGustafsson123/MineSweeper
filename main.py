@@ -69,12 +69,31 @@ def main():
     # Restart button.
     restartButton = pygame.Rect(250, 10, 100, 30)
 
+    # Timer setup
+    startTicks = pygame.time.get_ticks()
+    totalTime = startTime
+
+    clock = pygame.time.Clock()
+
     running = True
     while running:
+        dt = clock.tick(fps) / 1000  # x seconds since last frame
+
         screen.fill(colors["LIGHTGRAY"])
 
+        # Calculate remaining time
+        if not gameOver:
+            secondsPassed = (pygame.time.get_ticks() - startTicks) / 1000
+            elapsedTime = max(0, totalTime - int(secondsPassed))
+        else:
+            elapsedTime = max(0, elapsedTime)  # freeze timer if you loose (shitcan)
+
+        # Check if time is up
+        if elapsedTime <= 0 and not gameOver:
+            gameOver = True
+            won = False
+
         # Time, flag count.
-        elapsedTime = int(0)
         timeText = font.render(f"Time: {elapsedTime}s", True, colors["BLACK"])
         flagText = font.render(f"Flags: {flagCount}/{mineCount}", True, colors["BLACK"])
         screen.blit(timeText, (10, 10))
@@ -102,6 +121,7 @@ def main():
 
             elif event.type == pygame.MOUSEBUTTONDOWN and not gameOver:
                 mx, my = pygame.mouse.get_pos()
+                
                 if my >= 50:
                     gridX = mx // cellSize
                     gridY = (my - 50) // cellSize

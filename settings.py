@@ -12,3 +12,4 @@ colors = {
 }
 
 mineCount = 40
+startTime = 120
